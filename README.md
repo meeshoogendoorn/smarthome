@@ -17,9 +17,9 @@ The Tado Integration currently only supports:
 # Planned
 following integrations are planned:
 
-[x] Tado Integration read-only
-[-] Loqed (Dutch smart lock)
-[-] Ring doorbell
-[-] Zigbee/Tradfri Smart home lights
-[-] Smart blinds
-[-] TADO control heating
+- Tado Integration read-only
+- Loqed (Dutch smart lock)
+- Ring doorbell
+- Zigbee/Tradfri Smart home lights
+- Smart blinds
+- TADO control heating
