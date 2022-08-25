@@ -23,3 +23,4 @@ following integrations are planned:
 - Zigbee/Tradfri Smart home lights
 - Smart blinds
 - TADO control heating
+- Airplay streaming to homepod/apple-tv
