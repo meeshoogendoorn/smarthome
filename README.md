@@ -23,7 +23,6 @@ so the client is based on reverse engineering done by [Stephen C Phillips](https
 # Planned
 following integrations are planned:
 
-- Tado Integration read-only
 - Loqed (Dutch smart lock)
 - Ring doorbell
 - Zigbee/Tradfri Smart home lights
