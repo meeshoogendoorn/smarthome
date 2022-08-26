@@ -4,44 +4,50 @@ import { AccessToken, ResourceOwnerPassword } from "simple-oauth2";
 const EXPIRATION_REFRESH_TOKEN_SECONDS = 300;
 const CONFIG = {
   client: {
-    id: process.env.TADO_WEB_APP_ID,
-    secret: process.env.TADO_SECRET,
+    id: process.env.NUXT_TADO_CLIENT_ID,
+    secret: process.env.NUXT_TADO_CLIENT_SECRET,
   },
   auth: {
-    tokenHost: process.env.TADO_AUTH_URL,
+    tokenHost: process.env.NUXT_TADO_AUTH_URL,
   },
 };
-
-const tado_username = process.env.TADO_USERNAME;
-const tado_password = process.env.TADO_PASSWORD;
-
 const client = new ResourceOwnerPassword(CONFIG);
-
-// no official api documentation! this client is based on a blog post that reverse engineered the api
-// https://shkspr.mobi/blog/2019/02/tado-api-guide-updated-for-2019/
-
-// to obtain a client secret for tado api go to the following url: https://app.tado.com/env.js
 
 export default class TadoClient {
   username: string;
   password: string;
   scope: string;
   accessToken: AccessToken;
+  client_id: string;
+  client_secret: string;
 
-  constructor(scope = "home.user") {
+  constructor(
+    username,
+    password,
+    client_id,
+    client_secret,
+    scope = "home.user"
+  ) {
+    if (process.client) {
+      throw new Error("tado.client can only be used on the server");
+    }
     this.scope = scope;
+    this.username = username;
+    this.password = password;
+    this.client_id = client_id;
+    this.client_secret = client_secret;
   }
 
   async authenticate() {
     const tokenParams = {
       scope: this.scope,
-      username: tado_username,
-      password: tado_password,
+      username: this.username,
+      password: this.password,
     };
     try {
       this.accessToken = await client.getToken(tokenParams);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   }
 
@@ -66,7 +72,7 @@ export default class TadoClient {
 
   async request(url, method = "get", data = {}) {
     await this.refreshToken();
-    const requestUrl = new URL(url, process.env.TADO_API_URL);
+    const requestUrl = new URL(url, process.env.NUXT_TADO_API_URL);
 
     const request = {
       url: requestUrl.href,
@@ -114,7 +120,7 @@ export default class TadoClient {
   async getAirComfortDetailed(home_id) {
     const home = await this.getHome(home_id);
     const location = `latitude=${home.geolocation.latitude}&longitude=${home.geolocation.longitude}`;
-    const login = `username=${tado_username}&password=${tado_password}`;
+    const login = `username=${this.username}&password=${this.password}`;
     const resp = await axios(
       `https://acme.tado.com/v1/homes/${home_id}/airComfort?${location}&${login}`
     );

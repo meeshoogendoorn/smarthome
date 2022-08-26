@@ -1,32 +1,20 @@
 <script setup>
-import tadoClient from "@/client/tado.client";
 import {
   getOutsideTemperature,
   getSolarIntensityPercentage,
 } from "~~/helpers/tado.helper";
-import { getCurrentInstance } from "vue";
 
-const client = new tadoClient();
+const { me, home, zones, weather, load, isLoading } = useTado();
+load();
 
-const {
-  init,
-  me,
-  loadMe,
-  activeHome,
-  zones,
-  loadZones,
-  weather,
-  loadWeather,
-  airComfort,
-  loadAirComfort,
-} = useTado(client);
+setInterval(() => {
+  load();
+}, 5000);
 
-await init();
-await loadMe();
-await loadZones();
-
-await loadWeather();
-await loadAirComfort();
+const { snapshotBuffer } = await useRing();
+watch(snapshotBuffer, () => {
+  console.log("taken ss");
+});
 </script>
 <template>
   <div
@@ -73,19 +61,26 @@ await loadAirComfort();
         </div>
       </div>
       <a
+        v-if="me"
         href="https://app.tado.com"
         class="col-span-3 rounded p-4 flex flex-col gradient-border"
       >
         <div class="flex justify-between items-center mb-4">
           <h4 v-if="me" class="font-medium text-2xl">Welcome {{ me.name }}</h4>
-          <img src="/tado-icon.png" alt="Tado Logo" width="75" height="75" />
+          <img
+            :class="{ 'animate-pulse': isLoading }"
+            src="/tado-icon.png"
+            alt="Tado Logo"
+            width="75"
+            height="75"
+          />
         </div>
         <p v-if="me" class="mb-2">
           Weather
           <span
             class="bg-gray-100 dark:bg-white/10 rounded font-mono p-1 font-bold"
           >
-            {{ activeHome.name }}</span
+            {{ home.name }}</span
           >
           currently
           <span
@@ -98,6 +93,11 @@ await loadAirComfort();
         </p>
       </a>
       <tado-zone-card v-for="zone in zones" :key="zone.id" :zone="zone" />
+      <ring-snapshot-card
+        v-if="snapshotBuffer"
+        :img="`data:image/png;base64,
+      ${snapshotBuffer}`"
+      />
     </div>
   </div>
 </template>
