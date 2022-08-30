@@ -1,5 +1,5 @@
 <template>
   <div>
-    <tado app-name="Tado" />
+    <overview />
   </div>
 </template>

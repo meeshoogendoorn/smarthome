@@ -13,9 +13,7 @@
     "tailwindcss": "^3.1.8"
   },
   "dependencies": {
-    "@videojs/http-streaming": "^2.14.2",
     "axios": "^0.27.2",
-    "ring-client-api": "^11.1.0",
     "simple-oauth2": "^4.3.0"
   }
 }
