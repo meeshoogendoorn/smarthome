@@ -11,10 +11,7 @@ setInterval(() => {
   load();
 }, 5000);
 
-const { snapshotBuffer } = await useRing();
-watch(snapshotBuffer, () => {
-  console.log("taken ss");
-});
+// const { snapshotBuffer } = await useRing();
 </script>
 <template>
   <div
@@ -93,11 +90,12 @@ watch(snapshotBuffer, () => {
         </p>
       </a>
       <tado-zone-card v-for="zone in zones" :key="zone.id" :zone="zone" />
-      <ring-snapshot-card
+      <!-- <ring-snapshot-card
         v-if="snapshotBuffer"
         :img="`data:image/png;base64,
       ${snapshotBuffer}`"
-      />
+      /> -->
+      <ring-video-card />
     </div>
   </div>
 </template>

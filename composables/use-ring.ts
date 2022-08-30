@@ -2,20 +2,18 @@ import ringClient from "~~/client/ring.client";
 
 export const useRing = async () => {
   const snapshotBuffer = ref(null);
+  const camera = ref(null);
   const ring = new ringClient();
-  ring.init();
+  await ring.init();
   await ring.getLocation();
-  ring.getCamera();
-  ring.streamCameraNotifications(async ({ ding, subtype }) => {
-    snapshotBuffer.value = Buffer.from(await ring.getSnapshot()).toString(
-      "base64"
-    );
-  });
+  camera.value = await ring.getCamera();
+
   snapshotBuffer.value = Buffer.from(await ring.getSnapshot()).toString(
     "base64"
   );
 
   return {
+    camera,
     snapshotBuffer,
   };
 };
